@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <Appenders>
+        <console name="stdout" target="SYSTEM_OUT">
+            <PatternLayout>
+                <Pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%p] [%c{10}:%L] [%thread] - %m%n</Pattern>
+            </PatternLayout>
+        </console>
+    </Appenders>
+    <Loggers>
+        <root level="info">
+            <AppenderRef ref="stdout" />
+        </root>
+    </Loggers>
+</configuration>

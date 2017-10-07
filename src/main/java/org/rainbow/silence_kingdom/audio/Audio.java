@@ -1,4 +1,4 @@
-package org.rainbow.silence_kingdom.test;
+package org.rainbow.silence_kingdom.audio;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,15 +25,25 @@ public class Audio extends Thread {
 
     private int currentRagePoint;
 
+    private boolean isRecording;
+
+    public void startRecord() {
+        isRecording = true;
+    }
+
+    public void stopRecord() {
+        isRecording = false;
+    }
+
     public void capture() {
         try {
-            AudioFormat AUDIO_FORMAT = new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED,
+            AudioFormat AUDIO_FORMAT = new AudioFormat(AudioFormat.Encoding.ULAW,
                     8000f,
                     8,
                     1,
                     1,
                     8000f,
-                    false);
+                    true);
 
             DataLine.Info targetInfo = new DataLine.Info(TargetDataLine.class, AUDIO_FORMAT);
             TargetDataLine targetLine = (TargetDataLine) AudioSystem.getLine(targetInfo);
@@ -55,12 +65,14 @@ public class Audio extends Thread {
                 for (byte b : targetData) {
                     currentRagePoints += b;
                 }
+                currentRagePoints = currentRagePoints * 100 / 256 + 50 * targetData.length;
 
+                if (isRecording) {
+                    totalRagePoints += currentRagePoints;
+                    sampleNum += targetData.length;
+                }
                 currentRagePoint = currentRagePoints / targetData.length;
-                totalRagePoints += currentRagePoints;
-                sampleNum += targetData.length;
-
-//                setAudioBuffer(targetData);
+                logger.info("current rage point, {}", currentRagePoint);
             }
         } catch (Exception e) {
             logger.error("capture audio info error", e);
@@ -71,7 +83,12 @@ public class Audio extends Thread {
         return currentRagePoint;
     }
 
+    public int getAverageRagePoint() {
+        return (int) (totalRagePoints / sampleNum);
+    }
+
     @Override public void run() {
         capture();
     }
 }
+

@@ -25,7 +25,7 @@ public class WaveRecord extends JPanel implements Runnable {
 
     public void paint(Graphics g) {
         super.paint(g);
-        byte[] audioData = audio.getAudioBuffer();
+        byte[] audioData = new byte[]{};
         g.fillRect(this.getX(), this.getY(), 1000, 380);
         if (audioData != null) {
             //            logger.info("abc");
@@ -46,7 +46,7 @@ public class WaveRecord extends JPanel implements Runnable {
                 Thread.sleep(50);
                 long start = System.currentTimeMillis();
                 paint(getGraphics());
-                logger.info("draw time, {}", System.currentTimeMillis() - start);
+//                logger.info("draw time, {}", System.currentTimeMillis() - start);
             } catch (Exception e) {
                 logger.error("wave record error", e);
             }

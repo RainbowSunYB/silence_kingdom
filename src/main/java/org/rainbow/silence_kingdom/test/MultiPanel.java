@@ -112,19 +112,19 @@ public class MultiPanel {
         frame.add(panel2, BorderLayout.SOUTH);
         frame.add(mainPanel, BorderLayout.CENTER);
 
-        //        Thread.sleep(5000);
+        Thread.sleep(5000);
 
-        //        frame.remove(panel2);
-        //        frame.add(panel3, BorderLayout.SOUTH);
+        frame.remove(panel2);
+        frame.add(panel3, BorderLayout.SOUTH);
 
         //        frame.pack();
 
-//        SwingUtilities.invokeLater(new Runnable() {
-//            @Override public void run() {
-//                scrollPane.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()));
-//                frame.getContentPane().revalidate();
-//            }
-//        });
+        //        SwingUtilities.invokeLater(new Runnable() {
+        //            @Override public void run() {
+        //                scrollPane.setPreferredSize(new Dimension(frame.getWidth(), frame.getHeight()));
+        //                frame.getContentPane().revalidate();
+        //            }
+        //        });
 
         frame.getContentPane().revalidate();
     }

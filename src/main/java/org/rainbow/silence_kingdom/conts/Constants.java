@@ -1,4 +1,4 @@
-package org.rainbow.silence_kingdom;
+package org.rainbow.silence_kingdom.conts;
 
 /**
  * Copyright (c) by Megvii.com.

@@ -23,7 +23,12 @@ public abstract class BaseView {
         this.baseFrame = baseFrame;
     }
 
+    protected void destroy() {
+
+    }
+
     abstract ViewType getViewType();
 
     abstract Container getView();
+
 }

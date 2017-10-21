@@ -1,11 +1,16 @@
 package org.rainbow.silence_kingdom.view;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.rainbow.silence_kingdom.conts.ViewType;
+import org.rainbow.silence_kingdom.models.Card;
+import org.rainbow.silence_kingdom.util.DB;
+import org.rainbow.silence_kingdom.util.Meta;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.Set;
 
 import static javax.swing.JFrame.EXIT_ON_CLOSE;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS;
@@ -18,7 +23,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
  * Time: 上午7:27.
  * Description:
  */
-public class ListView extends BaseView implements ActionListener {
+public class ListView extends BaseView {
 
     private JScrollPane pane;
 
@@ -27,25 +32,49 @@ public class ListView extends BaseView implements ActionListener {
 
         JPanel panel = new JPanel();
 
-        ImageIcon image = new ImageIcon("img/sample.jpg");
-        JButton imgButton1 = new JButton(image);
-        imgButton1.setBounds(new Rectangle(imgButton1.getWidth(), imgButton1.getHeight()));
-        imgButton1.addActionListener(this);
+        java.util.List<Card> cards = DB.queryAllCards();
+        if (cards == null || cards.size() == 0) {
+            return;
+        }
 
-        JButton imgButton2 = new JButton(image);
-        imgButton2.setBounds(new Rectangle(imgButton2.getWidth(), imgButton2.getHeight()));
+        Set<Integer> unacquiredCardIds = Sets.newHashSet();
+        java.util.List<Card> unacquiredCards = DB.queryUnacquiredCards();
+        if (unacquiredCards != null) {
+            for (Card item : unacquiredCards) {
+                unacquiredCardIds.add(item.getId());
+            }
+        }
 
-        JButton imgButton3 = new JButton(image);
-        imgButton3.setBounds(new Rectangle(imgButton3.getWidth(), imgButton3.getHeight()));
+        java.util.List<java.util.List<Component>> vGroups = Lists.newArrayList();
+        java.util.List<java.util.List<Component>> hGroups = Lists.newArrayList();
+        for (int i = 0; i < 3; i++) {
+            hGroups.add(Lists.newArrayList());
+        }
+        for (int i = 0; i < cards.size() / 3 + 1; i++) {
+            vGroups.add(Lists.newArrayList());
+        }
 
-        JButton imgButton4 = new JButton(image);
-        imgButton4.setBounds(new Rectangle(imgButton4.getWidth(), imgButton4.getHeight()));
-
-        JButton imgButton5 = new JButton(image);
-        imgButton5.setBounds(new Rectangle(imgButton5.getWidth(), imgButton5.getHeight()));
-
-        JButton imgButton6 = new JButton(image);
-        imgButton6.setBounds(new Rectangle(imgButton6.getWidth(), imgButton6.getHeight()));
+        for (int i = 0; i < cards.size(); i++) {
+            Card card = cards.get(i);
+            ImageIcon imageIcon = null;
+            if (unacquiredCardIds.contains(card.getId())) {
+                imageIcon = new ImageIcon(Meta.IMG_DIR.getAbsolutePath() + "/default.jpg");
+            } else {
+                imageIcon = new ImageIcon(card.getSmallImagePath());
+            }
+            JButton button = new JButton(imageIcon);
+            button.setBounds(new Rectangle(imageIcon.getIconWidth(), imageIcon.getIconHeight()));
+            int hGroupIndex = i % 3;
+            int vGroupIndex = i / 3;
+            if (hGroups.get(hGroupIndex) == null) {
+                hGroups.set(hGroupIndex, Lists.newArrayList());
+            }
+            hGroups.get(hGroupIndex).add(button);
+            if (vGroups.get(vGroupIndex) == null) {
+                vGroups.set(vGroupIndex, Lists.newArrayList());
+            }
+            vGroups.get(vGroupIndex).add(button);
+        }
 
         GroupLayout groupLayout = new GroupLayout(panel);
         panel.setLayout(groupLayout);
@@ -56,27 +85,29 @@ public class ListView extends BaseView implements ActionListener {
         GroupLayout.SequentialGroup vGroup = groupLayout.createSequentialGroup();
         groupLayout.setVerticalGroup(vGroup);
 
-        hGroup.addGap(5);
-        hGroup.addGroup(groupLayout.createParallelGroup().addComponent(imgButton1).addComponent(imgButton4));
-        hGroup.addGap(5);
-        hGroup.addGroup(groupLayout.createParallelGroup().addComponent(imgButton2).addComponent(imgButton5));
-        hGroup.addGap(5);
-        hGroup.addGroup(groupLayout.createParallelGroup().addComponent(imgButton3).addComponent(imgButton6));
+        for (List<Component> items : hGroups) {
+            GroupLayout.ParallelGroup group = groupLayout.createParallelGroup();
+            for (Component item : items) {
+                group.addComponent(item);
+            }
+            hGroup.addGap(20);
+            hGroup.addGroup(group);
+        }
 
-        vGroup.addGap(10);
-        vGroup.addGroup(groupLayout.createParallelGroup().addComponent(imgButton1).addComponent(imgButton2).addComponent(imgButton3));
-        vGroup.addGap(10);
-        vGroup.addGroup(groupLayout.createParallelGroup().addComponent(imgButton4).addComponent(imgButton5).addComponent(imgButton6));
+        for (List<Component> items : vGroups) {
+            GroupLayout.ParallelGroup group = groupLayout.createParallelGroup();
+            for (Component item : items) {
+                group.addComponent(item);
+            }
+            vGroup.addGap(1);
+            vGroup.addGroup(group);
+        }
 
         pane = new JScrollPane(panel);
         pane.setPreferredSize(baseFrame.getDimension());
         pane.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_ALWAYS);
         pane.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
         pane.setVisible(true);
-    }
-
-    @Override public void actionPerformed(ActionEvent e) {
-        baseFrame.viewSwitch(new DetailView(baseFrame));
     }
 
     @Override public ViewType getViewType() {
@@ -101,6 +132,6 @@ public class ListView extends BaseView implements ActionListener {
         frame.setLocation(x, y);
 
         frame.setLayout(new BorderLayout());
-//        frame.add((new ListView()).getView());
+        //        frame.add((new ListView()).getView());
     }
 }

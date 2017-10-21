@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `idx_key` ON config (key)

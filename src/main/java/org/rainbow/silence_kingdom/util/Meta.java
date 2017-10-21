@@ -1,8 +1,13 @@
 package org.rainbow.silence_kingdom.util;
 
-import java.io.BufferedReader;
+import org.apache.logging.log4j.util.Strings;
+import org.rainbow.silence_kingdom.models.Card;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
-import java.io.FileReader;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright (c) by Megvii.com.
@@ -13,50 +18,45 @@ import java.io.FileReader;
  */
 public class Meta {
 
-    private static final String META_FILE_LOCATION = System.getProperty("meta.file.path");
+    private static final Logger logger = LoggerFactory.getLogger(Meta.class);
 
-    private static Meta SINGLETON = null;
+    private static final String CARD_RESOURCE_DIR_PREFIX = "card-";
 
-    public synchronized static Meta getInstance() {
-        if (SINGLETON == null) {
-            SINGLETON = newInstance(META_FILE_LOCATION);
-        }
-        return SINGLETON;
-    }
+    public static File IMG_DIR;
 
-    private static Meta newInstance(String metaFileLocation) {
-        File metaFile = null;
-        BufferedReader bufferedReader = null;
+    public static void loadCards() {
         try {
-            metaFile = new File(metaFileLocation);
-            bufferedReader = new BufferedReader(new FileReader(metaFile));
+            IMG_DIR = new File("img/");
+            File[] subDirs = IMG_DIR.listFiles();
+            if (subDirs == null || subDirs.length == 0) {
+                return;
+            }
 
-            String context = bufferedReader.readLine();
-
-
-
+            for (File dir : subDirs) {
+                if (dir.isDirectory() && dir.getName().startsWith(CARD_RESOURCE_DIR_PREFIX)) {
+                    Card card = new Card();
+                    card.setCardName(dir.getName().replaceFirst(CARD_RESOURCE_DIR_PREFIX, Strings.EMPTY));
+                    card.setImagePath(dir.getAbsolutePath() + "/image.jpg");
+                    card.setSmallImagePath(dir.getAbsolutePath() + "/small-image.jpg");
+                    logger.info("{}", card.getImagePath());
+                    DB.exec(String.format("insert into card (`card_name`, `image_path`, `small_image_path`, `status`) values ('%s', '%s', '%s', 0)", card.getCardName(), card.getImagePath(),
+                            card.getSmallImagePath()));
+                }
+            }
         } catch (Exception e) {
 
-        } finally {
-            if (bufferedReader != null) {
-                bufferedReader.close();
-            }
         }
     }
 
-    private int version;
-    private String dataDir;
-    private int totalMinutes;
-
-    public int getVersion() {
-        return version;
+    public static String getConfig(String key, String defaultValue) {
+        List<Map<String, Object>> result = DB.query(String.format("select key, value from config where key = '%s'", key));
+        if (result == null || result.size() == 0) {
+            return defaultValue;
+        }
+        return (String) result.get(0).get("value");
     }
 
-    public String getDataDir() {
-        return dataDir;
-    }
-
-    public int getTotalMinutes() {
-        return totalMinutes;
+    public static void addConfig(String key, String value) {
+        DB.exec(String.format("replace into config (key, value) values ('%s', '%s')", key, value));
     }
 }

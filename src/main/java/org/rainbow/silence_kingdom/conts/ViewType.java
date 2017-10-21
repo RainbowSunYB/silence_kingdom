@@ -8,8 +8,11 @@ package org.rainbow.silence_kingdom.conts;
  * Description:
  */
 public enum ViewType {
-    HOME,
+    WELCOME_PAGE,
     DETAIL,
     LIST,
-    AUDIO_RECORD
+    SETTING,
+    AUDIO_RECORD,
+    SUCCESS,
+    FAIL
 }

@@ -37,7 +37,7 @@ public class Audio extends Thread {
 
     public void capture() {
         try {
-            AudioFormat AUDIO_FORMAT = new AudioFormat(AudioFormat.Encoding.ULAW,
+            AudioFormat AUDIO_FORMAT = new AudioFormat(AudioFormat.Encoding.PCM_UNSIGNED,
                     8000f,
                     8,
                     1,
@@ -72,7 +72,7 @@ public class Audio extends Thread {
                     sampleNum += targetData.length;
                 }
                 currentRagePoint = currentRagePoints / targetData.length;
-                logger.info("current rage point, {}", currentRagePoint);
+//                logger.info("current rage point, {}", currentRagePoint);
             }
         } catch (Exception e) {
             logger.error("capture audio info error", e);
@@ -84,6 +84,9 @@ public class Audio extends Thread {
     }
 
     public int getAverageRagePoint() {
+        if (totalRagePoints == 0 || sampleNum == 0) {
+            return 0;
+        }
         return (int) (totalRagePoints / sampleNum);
     }
 

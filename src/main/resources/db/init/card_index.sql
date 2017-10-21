@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `idx_card_name` ON card (card_name);

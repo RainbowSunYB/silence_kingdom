@@ -121,20 +121,21 @@ public class Dashboard extends JComponent {
     }
 
     private void initComponent() {
-        if (foregroundColor != null)
-            this.setForeground(foregroundColor);
-        if (backgroundColor != null)
-            this.setBackground(backgroundColor);
+//        if (foregroundColor != null)
+//            this.setBackground(foregroundColor);
+//        if (backgroundColor != null)
+//            this.setBackground(backgroundColor);
+        this.setOpaque(false);
         if (size != null)
             this.setPreferredSize(size);
     }
 
     private Graphics2D graphicsConfig(Graphics g) {
-        fontSize = 14;
+        fontSize = 18;
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setColor(this.getBackground());
-        g2.fillRect(0, 0, (int) width, (int) height);
+//        g2.fillRect(0, 0, (int) width, (int) height);
         g2.setColor(this.getForeground());
         g2.setStroke(new BasicStroke(1));
         g2.setFont(new Font(Font.SERIF, Font.PLAIN, fontSize));

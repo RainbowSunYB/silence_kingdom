@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.rainbow.silence_kingdom.conts.ViewType;
+import org.rainbow.silence_kingdom.util.Crypto;
 import org.rainbow.silence_kingdom.util.Meta;
 
 import javax.swing.*;
@@ -53,6 +54,12 @@ public class WelcomeView extends BaseView {
                 baseFrame.viewSwitch(new SettingView(baseFrame));
             }
         });
+
+        producerButton.addActionListener(new ActionListener() {
+            @Override public void actionPerformed(ActionEvent e) {
+                baseFrame.viewSwitch(new ProducerView(baseFrame));
+            }
+        });
     }
 
     @Override ViewType getViewType() {
@@ -68,12 +75,32 @@ public class WelcomeView extends BaseView {
         panel = new JPanel() {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                ImageIcon icon = new ImageIcon(Meta.IMG_DIR.getAbsolutePath() + "/backgroud.jpg");
+                ImageIcon icon = new ImageIcon(Crypto.decode(Meta.IMG_DIR.getAbsolutePath() + "/background.jpg"));
                 Image img = icon.getImage();
                 g.drawImage(img, 0, 0, icon.getIconWidth(),
                         icon.getIconHeight(), icon.getImageObserver());
             }
         };
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
+        if (currentFont == null)
+            return null;
+        String resultName;
+        if (fontName == null) {
+            resultName = currentFont.getName();
+        } else {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
+                resultName = fontName;
+            } else {
+                resultName = currentFont.getName();
+            }
+        }
+        return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
     }
 
     /**
@@ -101,6 +128,9 @@ public class WelcomeView extends BaseView {
         gbc.fill = GridBagConstraints.BOTH;
         panel.add(panel1, gbc);
         cardButton = new JButton();
+        Font cardButtonFont = this.$$$getFont$$$(null, Font.BOLD, 18, cardButton.getFont());
+        if (cardButtonFont != null)
+            cardButton.setFont(cardButtonFont);
         cardButton.setText("卡牌库");
         panel1.add(cardButton,
                 new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
@@ -108,21 +138,33 @@ public class WelcomeView extends BaseView {
         startButton = new JButton();
         startButton.setBorderPainted(true);
         startButton.setDefaultCapable(true);
+        Font startButtonFont = this.$$$getFont$$$(null, Font.BOLD, 18, startButton.getFont());
+        if (startButtonFont != null)
+            startButton.setFont(startButtonFont);
         startButton.setText("开始旅程");
         panel1.add(startButton,
                 new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         settingButton = new JButton();
+        Font settingButtonFont = this.$$$getFont$$$(null, Font.BOLD, 18, settingButton.getFont());
+        if (settingButtonFont != null)
+            settingButton.setFont(settingButtonFont);
         settingButton.setText("设置");
         panel1.add(settingButton,
                 new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         travelDescriptionButton = new JButton();
+        Font travelDescriptionButtonFont = this.$$$getFont$$$(null, Font.BOLD, 18, travelDescriptionButton.getFont());
+        if (travelDescriptionButtonFont != null)
+            travelDescriptionButton.setFont(travelDescriptionButtonFont);
         travelDescriptionButton.setText("旅行指南");
         panel1.add(travelDescriptionButton,
                 new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
                         GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         producerButton = new JButton();
+        Font producerButtonFont = this.$$$getFont$$$(null, Font.BOLD, 18, producerButton.getFont());
+        if (producerButtonFont != null)
+            producerButton.setFont(producerButtonFont);
         producerButton.setText("制作人员");
         panel1.add(producerButton,
                 new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,

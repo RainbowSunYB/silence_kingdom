@@ -4,11 +4,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.rainbow.silence_kingdom.conts.ViewType;
 import org.rainbow.silence_kingdom.models.Card;
+import org.rainbow.silence_kingdom.util.Crypto;
 import org.rainbow.silence_kingdom.util.DB;
 import org.rainbow.silence_kingdom.util.Meta;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.Set;
 
@@ -58,11 +61,18 @@ public class ListView extends BaseView {
             Card card = cards.get(i);
             ImageIcon imageIcon = null;
             if (unacquiredCardIds.contains(card.getId())) {
-                imageIcon = new ImageIcon(Meta.IMG_DIR.getAbsolutePath() + "/default.jpg");
+                imageIcon = new ImageIcon(Crypto.decode(Meta.IMG_DIR.getAbsolutePath() + "/default.jpg"));
             } else {
-                imageIcon = new ImageIcon(card.getSmallImagePath());
+                imageIcon = new ImageIcon(Crypto.decode(card.getSmallImagePath()));
             }
             JButton button = new JButton(imageIcon);
+            if (!unacquiredCardIds.contains(card.getId())) {
+                button.addActionListener(new ActionListener() {
+                    @Override public void actionPerformed(ActionEvent e) {
+                        baseFrame.viewSwitch(new DetailView(baseFrame, card.getId()));
+                    }
+                });
+            }
             button.setBounds(new Rectangle(imageIcon.getIconWidth(), imageIcon.getIconHeight()));
             int hGroupIndex = i % 3;
             int vGroupIndex = i / 3;
@@ -90,7 +100,7 @@ public class ListView extends BaseView {
             for (Component item : items) {
                 group.addComponent(item);
             }
-            hGroup.addGap(20);
+            hGroup.addGap(5);
             hGroup.addGroup(group);
         }
 

@@ -27,6 +27,12 @@ public class Audio extends Thread {
 
     private boolean isRecording;
 
+    private boolean running = true;
+
+    public void astop() {
+        running = false;
+    }
+
     public void startRecord() {
         isRecording = true;
     }
@@ -52,27 +58,32 @@ public class Audio extends Thread {
 
             int numBytesRead;
 
-            while (true) {
-                byte[] targetData = new byte[targetLine.getBufferSize()];
+            while (running) {
+                try {
+                    byte[] targetData = new byte[targetLine.getBufferSize()];
 
-                numBytesRead = targetLine.read(targetData, 0, targetData.length);
+                    numBytesRead = targetLine.read(targetData, 0, targetData.length);
 
-                if (numBytesRead == -1) {
-                    break;
+                    if (numBytesRead == -1 && targetData.length <= 0) {
+                        Thread.sleep(100);
+                        continue;
+                    }
+
+                    int currentRagePoints = 0;
+                    for (byte b : targetData) {
+                        currentRagePoints += b;
+                    }
+                    currentRagePoints = currentRagePoints * 100 / 256 + 50 * targetData.length;
+
+                    if (isRecording) {
+                        totalRagePoints += currentRagePoints;
+                        sampleNum += targetData.length;
+                    }
+                    currentRagePoint = currentRagePoints / targetData.length;
+                    //                logger.info("current rage point, {}", currentRagePoint);
+                } catch (Exception e) {
+                    logger.error("something bad happens...", e);
                 }
-
-                int currentRagePoints = 0;
-                for (byte b : targetData) {
-                    currentRagePoints += b;
-                }
-                currentRagePoints = currentRagePoints * 100 / 256 + 50 * targetData.length;
-
-                if (isRecording) {
-                    totalRagePoints += currentRagePoints;
-                    sampleNum += targetData.length;
-                }
-                currentRagePoint = currentRagePoints / targetData.length;
-//                logger.info("current rage point, {}", currentRagePoint);
             }
         } catch (Exception e) {
             logger.error("capture audio info error", e);

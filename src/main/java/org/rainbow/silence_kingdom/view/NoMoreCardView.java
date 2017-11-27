@@ -10,23 +10,23 @@ import java.awt.*;
 /**
  * Copyright (c) by Megvii.com.
  * Created by Rainbow Sun.
- * Date: 2017/10/20.
- * Time: 下午10:07.
+ * Date: 2017/10/21.
+ * Time: 下午6:15.
  * Description:
  */
-public class FailView extends BaseView {
-    private JPanel panel;
+public class NoMoreCardView extends BaseView {
+    private JPanel panel1;
 
-    protected FailView(BaseFrame baseFrame) {
+    protected NoMoreCardView(BaseFrame baseFrame) {
         super(baseFrame);
     }
 
     @Override ViewType getViewType() {
-        return ViewType.FAIL;
+        return null;
     }
 
     @Override Container getView() {
-        return panel;
+        return panel1;
     }
 
     /**
@@ -64,19 +64,16 @@ public class FailView extends BaseView {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        panel = new JPanel();
-        panel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel.setBackground(new Color(-16777216));
-        panel.setOpaque(true);
+        panel1 = new JPanel();
+        panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.setBackground(new Color(-16777216));
         final JLabel label1 = new JLabel();
-        Font label1Font = this.$$$getFont$$$("Apple Braille", Font.PLAIN, 28, label1.getFont());
+        Font label1Font = this.$$$getFont$$$("Apple Braille", Font.BOLD, 28, label1.getFont());
         if (label1Font != null)
             label1.setFont(label1Font);
         label1.setForeground(new Color(-1));
-        label1.setHorizontalAlignment(0);
-        label1.setHorizontalTextPosition(0);
-        label1.setText("糟糕!声音太大,生物已经被吓跑了...失败了...");
-        panel.add(label1,
+        label1.setText("已经获得所有的卡牌!");
+        panel1.add(label1,
                 new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
                         false));
     }
@@ -85,6 +82,6 @@ public class FailView extends BaseView {
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
-        return panel;
+        return panel1;
     }
 }

@@ -39,8 +39,16 @@ public class Meta {
                     card.setImagePath(dir.getAbsolutePath() + "/image.jpg");
                     card.setSmallImagePath(dir.getAbsolutePath() + "/small-image.jpg");
                     logger.info("{}", card.getImagePath());
-                    DB.exec(String.format("insert into card (`card_name`, `image_path`, `small_image_path`, `status`) values ('%s', '%s', '%s', 0)", card.getCardName(), card.getImagePath(),
-                            card.getSmallImagePath()));
+
+                    List<Map<String, Object>> result = DB.query(String.format("select id from card where card_name = '%s'", card.getCardName()));
+                    boolean existed = result != null && result.size() > 0;
+                    if (existed) {
+                        DB.exec(String
+                                .format("update card set `image_path` = '%s', `small_image_path` = '%s' where card_name = '%s'", card.getImagePath(), card.getSmallImagePath(), card.getCardName()));
+                    } else {
+                        DB.exec(String.format("insert into card (`card_name`, `image_path`, `small_image_path`) values ('%s', '%s', '%s')", card.getCardName(), card.getImagePath(),
+                                card.getSmallImagePath()));
+                    }
                 }
             }
         } catch (Exception e) {

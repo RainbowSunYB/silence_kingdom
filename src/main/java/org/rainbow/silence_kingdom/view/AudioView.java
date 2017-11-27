@@ -23,16 +23,12 @@ import static org.rainbow.silence_kingdom.conts.Constants.*;
 /**
  * Copyright (c) by Megvii.com.
  * Created by Rainbow Sun.
- * Date: 2017/10/22.
- * Time: 下午11:09.
+ * Date: 2017/10/15.
+ * Time: 下午8:36.
  * Description:
  */
-public class AudioRecordView extends BaseView {
-    private static final Logger logger = LoggerFactory.getLogger(AudioRecordView.class);
-    private JLabel remainingTimeLabel;
-    private JLabel averageLabel;
-    private JLabel averageRagePointLabel;
-
+public class AudioView extends BaseView {
+    private static final Logger logger = LoggerFactory.getLogger(AudioView.class);
     private static final String REMAINING_TIME_TEMPLATE = "%d分%d秒";
 
     private JPanel panel;
@@ -59,7 +55,7 @@ public class AudioRecordView extends BaseView {
     private Audio audio = new Audio();
     private Refresher refresher = new Refresher();
 
-    protected AudioRecordView(BaseFrame baseFrame) {
+    protected AudioView(BaseFrame baseFrame) {
         super(baseFrame);
 
         $$$setupUI$$$();
@@ -79,7 +75,7 @@ public class AudioRecordView extends BaseView {
         this.averageRagePointField.setText(Integer.toString(averageRagePoint));
         this.averageField.setText(Integer.toString(averageRagePoint));
 
-        refresher.addTask(new DashboardTask(System.currentTimeMillis(), this));
+//        refresher.addTask(new DashboardTask(System.currentTimeMillis(), this));
         refresher.start();
 
         audio.start();
@@ -164,7 +160,7 @@ public class AudioRecordView extends BaseView {
         startTime = System.currentTimeMillis();
         endTime = startTime + this.remainingMinutes * 60 * 1000;
         audio.startRecord();
-        refresher.addTask(new TimerTask(this));
+//        refresher.addTask(new TimerTask(this));
     }
 
     public void stop(boolean complete) {
@@ -185,8 +181,8 @@ public class AudioRecordView extends BaseView {
             } else if (cards.size() == 0) {
                 history.setCardId(-1);
             } else {
-                long random = System.currentTimeMillis() % cards.size();
-                history.setCardId(cards.get((int) random).getId());
+                int random = (int) System.currentTimeMillis() % cards.size();
+                history.setCardId(cards.get(random).getId());
             }
             history.setSuccess(HISTORY_SUCCESS);
         } else {
@@ -255,82 +251,90 @@ public class AudioRecordView extends BaseView {
      */
     private void $$$setupUI$$$() {
         createUIComponents();
-        panel.setLayout(new GridLayoutManager(6, 4, new Insets(0, 0, 0, 0), -1, -1));
-        currentRagePanel.setOpaque(false);
-        panel.add(currentRagePanel,
-                new GridConstraints(0, 0, 6, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        panel.setLayout(new GridLayoutManager(9, 5, new Insets(0, 0, 0, 0), -1, -1));
+        panel.setOpaque(true);
+        final JLabel label1 = new JLabel();
+        Font label1Font = this.$$$getFont$$$(null, Font.BOLD, 22, label1.getFont());
+        if (label1Font != null)
+            label1.setFont(label1Font);
+        label1.setForeground(new Color(-1));
+        label1.setText("剩余时间");
+        panel.add(label1,
+                new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+                        false));
         remainingTimeField = new JTextField();
         remainingTimeField.setEditable(false);
         Font remainingTimeFieldFont = this.$$$getFont$$$(null, -1, 28, remainingTimeField.getFont());
         if (remainingTimeFieldFont != null)
             remainingTimeField.setFont(remainingTimeFieldFont);
+        remainingTimeField.setText("");
         panel.add(remainingTimeField,
-                new GridConstraints(1, 2, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
+                new GridConstraints(2, 2, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
                         new Dimension(200, -1), new Dimension(200, -1), 0, false));
-        remainingTimeLabel = new JLabel();
-        Font remainingTimeLabelFont = this.$$$getFont$$$(null, Font.BOLD, 22, remainingTimeLabel.getFont());
-        if (remainingTimeLabelFont != null)
-            remainingTimeLabel.setFont(remainingTimeLabelFont);
-        remainingTimeLabel.setForeground(new Color(-1));
-        remainingTimeLabel.setText("剩余时间");
-        panel.add(remainingTimeLabel,
-                new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+        final JLabel label2 = new JLabel();
+        label2.setFocusTraversalPolicyProvider(false);
+        Font label2Font = this.$$$getFont$$$(null, Font.BOLD, 22, label2.getFont());
+        if (label2Font != null)
+            label2.setFont(label2Font);
+        label2.setForeground(new Color(-1));
+        label2.setText("成功指数");
+        panel.add(label2,
+                new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
                         false));
-        averageLabel = new JLabel();
-        Font averageLabelFont = this.$$$getFont$$$(null, Font.BOLD, 22, averageLabel.getFont());
-        if (averageLabelFont != null)
-            averageLabel.setFont(averageLabelFont);
-        averageLabel.setForeground(new Color(-1));
-        averageLabel.setText("平均值");
-        panel.add(averageLabel,
-                new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
+        averageRagePointField = new JTextField();
+        averageRagePointField.setEditable(false);
+        Font averageRagePointFieldFont = this.$$$getFont$$$(null, Font.BOLD, 28, averageRagePointField.getFont());
+        if (averageRagePointFieldFont != null)
+            averageRagePointField.setFont(averageRagePointFieldFont);
+        averageRagePointField.setForeground(new Color(-4520417));
+        averageRagePointField.setText("");
+        panel.add(averageRagePointField,
+                new GridConstraints(4, 2, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
+                        new Dimension(200, -1), new Dimension(200, -1), 0, false));
+        currentRagePanel.setOpaque(false);
+        panel.add(currentRagePanel,
+                new GridConstraints(0, 0, 9, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        panel.add(spacer1, new GridConstraints(1, 2, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final Spacer spacer2 = new Spacer();
+        panel.add(spacer2, new GridConstraints(8, 2, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final Spacer spacer3 = new Spacer();
+        panel.add(spacer3, new GridConstraints(0, 2, 1, 3, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        final JLabel label3 = new JLabel();
+        Font label3Font = this.$$$getFont$$$(null, Font.BOLD, 22, label3.getFont());
+        if (label3Font != null)
+            label3.setFont(label3Font);
+        label3.setForeground(new Color(-1));
+        label3.setText("平均值");
+        panel.add(label3,
+                new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
                         false));
         averageField = new JTextField();
         averageField.setEditable(false);
         Font averageFieldFont = this.$$$getFont$$$(null, Font.BOLD, 28, averageField.getFont());
         if (averageFieldFont != null)
             averageField.setFont(averageFieldFont);
+        averageField.setText("");
         panel.add(averageField,
-                new GridConstraints(2, 2, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
+                new GridConstraints(3, 2, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
                         new Dimension(200, -1), new Dimension(200, -1), 0, false));
-        averageRagePointLabel = new JLabel();
-        Font averageRagePointLabelFont = this.$$$getFont$$$(null, Font.BOLD, 22, averageRagePointLabel.getFont());
-        if (averageRagePointLabelFont != null)
-            averageRagePointLabel.setFont(averageRagePointLabelFont);
-        averageRagePointLabel.setForeground(new Color(-1));
-        averageRagePointLabel.setText("成功指数");
-        panel.add(averageRagePointLabel,
-                new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                        false));
-        final Spacer spacer1 = new Spacer();
-        panel.add(spacer1, new GridConstraints(0, 2, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final Spacer spacer2 = new Spacer();
-        panel.add(spacer2, new GridConstraints(4, 2, 2, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         startButton = new JButton();
         Font startButtonFont = this.$$$getFont$$$(null, -1, 20, startButton.getFont());
         if (startButtonFont != null)
             startButton.setFont(startButtonFont);
         startButton.setText("开始");
         panel.add(startButton,
-                new GridConstraints(4, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(75, -1), new Dimension(75, -1), 0, false));
+                new GridConstraints(5, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), new Dimension(50, -1), 0, false));
         resetButton = new JButton();
         Font resetButtonFont = this.$$$getFont$$$(null, -1, 20, resetButton.getFont());
         if (resetButtonFont != null)
             resetButton.setFont(resetButtonFont);
         resetButton.setText("重置");
         panel.add(resetButton,
-                new GridConstraints(5, 3, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(75, -1), new Dimension(75, -1), 0, false));
-        averageRagePointField = new JTextField();
-        Font averageRagePointFieldFont = this.$$$getFont$$$(null, Font.BOLD, 28, averageRagePointField.getFont());
-        if (averageRagePointFieldFont != null)
-            averageRagePointField.setFont(averageRagePointFieldFont);
-        averageRagePointField.setForeground(new Color(-4520417));
-        panel.add(averageRagePointField,
-                new GridConstraints(3, 2, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
-                        new Dimension(200, -1), new Dimension(200, -1), 0, false));
+                new GridConstraints(6, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
+                        GridConstraints.SIZEPOLICY_FIXED, null, new Dimension(50, -1), new Dimension(50, -1), 0, false));
     }
 
     /**

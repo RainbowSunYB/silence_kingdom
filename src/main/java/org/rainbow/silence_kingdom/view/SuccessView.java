@@ -1,9 +1,8 @@
 package org.rainbow.silence_kingdom.view;
 
-import com.intellij.uiDesigner.core.GridConstraints;
-import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.rainbow.silence_kingdom.conts.ViewType;
 import org.rainbow.silence_kingdom.models.Card;
+import org.rainbow.silence_kingdom.util.Crypto;
 import org.rainbow.silence_kingdom.util.DB;
 
 import javax.swing.*;
@@ -12,23 +11,50 @@ import java.awt.*;
 /**
  * Copyright (c) by Megvii.com.
  * Created by Rainbow Sun.
- * Date: 2017/10/20.
- * Time: 下午10:48.
+ * Date: 2017/10/21.
+ * Time: 下午5:15.
  * Description:
  */
 public class SuccessView extends BaseView {
-    private JPanel panel;
-    private JPanel pannel1;
+    private JPanel panel1;
+    private JButton label;
     private Card card;
 
     protected SuccessView(BaseFrame baseFrame, int cardId) {
         super(baseFrame);
-        $$$setupUI$$$();
         card = DB.queryCardById(cardId);
+        $$$setupUI$$$();
     }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
+        panel1 = new JPanel() {
+            @Override protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon icon = new ImageIcon(Crypto.decode(card.getImagePath()));
+                Image img = icon.getImage();
+                g.drawImage(img, 0, 0, icon.getIconWidth(),
+                        icon.getIconHeight(), icon.getImageObserver());
+            }
+        };
+
+        panel1.setLayout(new BorderLayout());
+
+        JPanel panel = new JPanel();
+        panel.setOpaque(false);
+        panel1.add(panel, BorderLayout.CENTER);
+
+        label = new JButton();
+        label.setBounds(new Rectangle(500, 100));
+        label.setBackground(new Color(0xFFFFFF));
+        Font labelFont = this.$$$getFont$$$("Apple Braille", Font.BOLD, 20, label.getFont());
+        if (labelFont != null)
+            label.setFont(labelFont);
+        label.setForeground(new Color(0x000000));
+        label.setHorizontalAlignment(SwingConstants.CENTER);
+        label.setOpaque(true);
+        label.setText("挑战成功!恭喜获得新卡牌!");
+        panel1.add(label, BorderLayout.SOUTH);
     }
 
     @Override ViewType getViewType() {
@@ -36,7 +62,7 @@ public class SuccessView extends BaseView {
     }
 
     @Override Container getView() {
-        return panel;
+        return panel1;
     }
 
     /**
@@ -67,32 +93,13 @@ public class SuccessView extends BaseView {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        panel = new JPanel();
-        panel.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        panel.setOpaque(false);
-        pannel1 = new JPanel();
-        pannel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        pannel1.setFocusable(true);
-        Font pannel1Font = this.$$$getFont$$$("Monaco", -1, 20, pannel1.getFont());
-        if (pannel1Font != null)
-            pannel1.setFont(pannel1Font);
-        pannel1.setOpaque(false);
-        panel.add(pannel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW,
-                GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final JLabel label1 = new JLabel();
-        Font label1Font = this.$$$getFont$$$("Menlo", -1, 20, label1.getFont());
-        if (label1Font != null)
-            label1.setFont(label1Font);
-        label1.setText("挑战成功!恭喜获得新卡牌!");
-        pannel1.add(label1,
-                new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
-                        false));
+        createUIComponents();
     }
 
     /**
      * @noinspection ALL
      */
     public JComponent $$$getRootComponent$$$() {
-        return panel;
+        return panel1;
     }
 }

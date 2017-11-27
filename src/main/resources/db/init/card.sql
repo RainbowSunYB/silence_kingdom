@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS card (
   card_name        TEXT,
   image_path       TEXT,
   small_image_path TEXT,
-  status           INTEGER
+  status           INTEGER DEFAULT 0
 );

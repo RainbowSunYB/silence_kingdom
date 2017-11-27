@@ -27,8 +27,9 @@ public class DB {
 
     private static final Logger logger = LoggerFactory.getLogger(DB.class);
 
-    private static DataSource dataSource = makeDataSource("jdbc:sqlite:/tmp/silence_kingdom.db", Strings.EMPTY, Strings.EMPTY);
+    private static String DB_FILE = new File("silence_kingdom.db").getAbsolutePath();
 
+    private static DataSource dataSource = makeDataSource("jdbc:sqlite:" + DB_FILE, Strings.EMPTY, Strings.EMPTY);
 
     public static void initTable() {
         File dir = new File("db/init");

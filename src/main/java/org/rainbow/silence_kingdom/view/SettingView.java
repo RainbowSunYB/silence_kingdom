@@ -3,6 +3,7 @@ package org.rainbow.silence_kingdom.view;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.rainbow.silence_kingdom.conts.ViewType;
 import org.rainbow.silence_kingdom.util.Meta;
@@ -33,6 +34,12 @@ public class SettingView extends BaseView {
         $$$setupUI$$$();
         submitButton.addActionListener(new ActionListener() {
             @Override public void actionPerformed(ActionEvent e) {
+                int vs = NumberUtils.toInt(voiceThreshold.getText(), -1);
+                int tm = NumberUtils.toInt(totalMinutes.getText(), -1);
+                if (vs == -1 || tm == -1 || vs < 0 || vs > 100 || tm <= 0 || tm > 100) {
+                    return;
+                }
+
                 updateConfig(META_VOICE_THRESHOLD_KEY, voiceThreshold.getText());
                 updateConfig(META_TOTAL_MINUTES_KEY, totalMinutes.getText());
                 //                updateConfig(META_CARD_DIR_PATH_KEY, cardDirPath.getText());
@@ -65,6 +72,26 @@ public class SettingView extends BaseView {
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
+    }
+
+    /**
+     * @noinspection ALL
+     */
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
+        if (currentFont == null)
+            return null;
+        String resultName;
+        if (fontName == null) {
+            resultName = currentFont.getName();
+        } else {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
+                resultName = fontName;
+            } else {
+                resultName = currentFont.getName();
+            }
+        }
+        return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
     }
 
     /**
@@ -113,26 +140,6 @@ public class SettingView extends BaseView {
         panel.add(totalMinutes,
                 new GridConstraints(2, 2, 1, 3, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null,
                         new Dimension(150, -1), null, 0, false));
-    }
-
-    /**
-     * @noinspection ALL
-     */
-    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
-        if (currentFont == null)
-            return null;
-        String resultName;
-        if (fontName == null) {
-            resultName = currentFont.getName();
-        } else {
-            Font testFont = new Font(fontName, Font.PLAIN, 10);
-            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
-                resultName = fontName;
-            } else {
-                resultName = currentFont.getName();
-            }
-        }
-        return new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
     }
 
     /**

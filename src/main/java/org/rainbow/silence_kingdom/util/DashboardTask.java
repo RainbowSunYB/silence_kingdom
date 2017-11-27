@@ -13,7 +13,7 @@ import java.util.Random;
  */
 public class DashboardTask implements Task {
 
-    private static final long REFRESH_INTERVAL = 20;
+    private static final long REFRESH_INTERVAL = 50;
 
     private static Random random = new Random(47);
 

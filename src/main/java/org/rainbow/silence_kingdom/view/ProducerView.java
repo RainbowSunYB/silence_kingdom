@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.rainbow.silence_kingdom.conts.ViewType;
+import org.rainbow.silence_kingdom.util.Crypto;
 import org.rainbow.silence_kingdom.util.Meta;
 
 import javax.swing.*;
@@ -37,7 +38,7 @@ public class ProducerView extends BaseView {
         panel = new JPanel() {
             @Override protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                ImageIcon icon = new ImageIcon(Meta.IMG_DIR.getAbsolutePath() + "/description.jpg");
+                ImageIcon icon = new ImageIcon(Crypto.decode(Meta.IMG_DIR.getAbsolutePath() + "/text_background.jpg"));
                 Image img = icon.getImage();
                 g.drawImage(img, 0, 0, icon.getIconWidth(),
                         icon.getIconHeight(), icon.getImageObserver());
@@ -86,7 +87,7 @@ public class ProducerView extends BaseView {
         Font labelFont = this.$$$getFont$$$("Monaco", Font.BOLD, 20, label.getFont());
         if (labelFont != null)
             label.setFont(labelFont);
-        label.setText("策划/美术: 籍小婷");
+        label.setText("策划/美术: 籍小婷 15810079142");
         panel.add(label,
                 new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
                         false));
@@ -94,7 +95,7 @@ public class ProducerView extends BaseView {
         Font label1Font = this.$$$getFont$$$("Monaco", Font.BOLD, 20, label1.getFont());
         if (label1Font != null)
             label1.setFont(label1Font);
-        label1.setText("程序: 孙云博");
+        label1.setText("程序: 孙云博 13716762577");
         panel.add(label1,
                 new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0,
                         false));

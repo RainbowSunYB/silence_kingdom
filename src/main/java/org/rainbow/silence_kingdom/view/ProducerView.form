@@ -14,7 +14,7 @@
         </constraints>
         <properties>
           <font name="Monaco" size="20" style="1"/>
-          <text value="策划/美术: 籍小婷"/>
+          <text value="策划/美术: 籍小婷 15810079142"/>
         </properties>
       </component>
       <component id="b3ad" class="javax.swing.JLabel">
@@ -23,7 +23,7 @@
         </constraints>
         <properties>
           <font name="Monaco" size="20" style="1"/>
-          <text value="程序: 孙云博"/>
+          <text value="程序: 孙云博 13716762577"/>
         </properties>
       </component>
       <vspacer id="ee017">

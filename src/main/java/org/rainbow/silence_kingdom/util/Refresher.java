@@ -19,31 +19,37 @@ public class Refresher extends Thread {
 
     private static final Logger logger = LoggerFactory.getLogger(Refresher.class);
 
+    private boolean running = true;
+
     private PriorityQueue<Task> queue = new PriorityQueue<Task>(new Comparator<Task>() {
         @Override public int compare(Task o1, Task o2) {
             return (int) (o1.timestamp() - o2.timestamp());
         }
     });
 
+    public void astop() {
+        this.running = false;
+    }
+
     public void addTask(Task task) {
         queue.add(task);
     }
 
     @Override public void run() {
-        while (true) {
-//            logger.info("new loop");
+        while (running) {
+            //            logger.info("new loop");
             try {
                 boolean goon;
                 List<Task> taskList = Lists.newArrayList();
                 do {
                     Task task = queue.peek();
                     if (task != null && task.timestamp() < System.currentTimeMillis()) {
-//                        logger.info("got task");
+                        //                        logger.info("got task");
                         goon = true;
                         queue.remove(task);
                         taskList.add(task);
                     } else {
-//                        logger.info("no task");
+                        //                        logger.info("no task");
                         goon = false;
                     }
                 } while (goon);
@@ -59,8 +65,7 @@ public class Refresher extends Thread {
 
                 Thread.sleep(50);
             } catch (Exception e) {
-
-            } finally {
+                logger.error("refresher error", e);
             }
         }
     }
